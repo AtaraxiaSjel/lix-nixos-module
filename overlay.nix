@@ -21,6 +21,7 @@ in
     nix_2_18 = (prev.nixVersions.nix_2_18.override { boehmgc = boehmgc-patched; }).overrideAttrs (old: {
       src = lix;
       version = "2.18.3-lix";
+      VERSION_SUFFIX = "-lix";
 
       patches = [ ];
     });
