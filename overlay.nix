@@ -16,7 +16,7 @@ let
   );
 in
 {
-  nixVersions = prev.nixVersions // {
+  nixVersions = prev.nixVersions // rec {
     # FIXME: do something less scuffed
     nix_2_18 = (prev.nixVersions.nix_2_18.override { boehmgc = boehmgc-patched; }).overrideAttrs (old: {
       src = lix;
@@ -24,5 +24,6 @@ in
 
       patches = [ ];
     });
+    stable = nix_2_18;
   };
 }

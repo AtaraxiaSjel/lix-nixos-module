@@ -18,6 +18,7 @@
       };
     in
     {
+      inherit pkgs;
       packages.default = pkgs.nixVersions.nix_2_18;
     });
 }
