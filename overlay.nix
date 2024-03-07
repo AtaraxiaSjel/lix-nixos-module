@@ -26,6 +26,18 @@ in
       patches = [ ];
     });
     stable = nix_2_18;
+    nix_2_18_upstream = prev.nixVersions.nix_2_18;
+  };
+
+  # force these onto upstream so we are not regularly rebuilding electron
+  prefetch-yarn-deps = prev.prefetch-yarn-deps.override {
+    nix = final.nixVersions.nix_2_18_upstream;
+  };
+  prefetch-npm-deps = prev.prefetch-npm-deps.override {
+    nix = final.nixVersions.nix_2_18_upstream;
+  };
+  nix-prefetch-git = prev.nix-prefetch-git.override {
+    nix = final.nixVersions.nix_2_18_upstream;
   };
 
   nix-doc = prev.nix-doc.overrideAttrs (old: {
