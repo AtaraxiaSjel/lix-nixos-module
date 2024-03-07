@@ -26,4 +26,9 @@ in
     });
     stable = nix_2_18;
   };
+
+  nix-doc = prev.nix-doc.overrideAttrs (old: {
+    # for the purposes of nix C++ API for nix-doc, lix is Nix 2.20
+    NIX_CFLAGS_COMPILE = [ "-DNIX_2_20_0" ];
+  });
 }
