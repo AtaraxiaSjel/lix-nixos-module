@@ -19,12 +19,13 @@
       }
     },
     "lix": {
+      "flake": false,
       "locked": {
-        "lastModified": 1709811453,
-        "narHash": "sha256-UOyTAdUAJv80w3s6rrgYB5tQjp43u5Zp2dlM94uud04=",
+        "lastModified": 1709868386,
+        "narHash": "sha256-fokesPoYzfq492bpVxC+qc/iRDwsLcOCnq6IOjl6SK4=",
         "ref": "refs/heads/main",
-        "rev": "8a268359b06471b463a8f3fc46c83a1fced8ab75",
-        "revCount": 15077,
+        "rev": "eac76dbe90ad1ceade863744739246e9b6abaa90",
+        "revCount": 15086,
         "type": "git",
         "url": "ssh://gerrit.lix.systems:2022/lix"
       },
