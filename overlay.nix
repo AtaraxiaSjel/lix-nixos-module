@@ -20,7 +20,7 @@ in
     # FIXME: do something less scuffed
     nix_2_18 = (prev.nixVersions.nix_2_18.override { boehmgc = boehmgc-patched; }).overrideAttrs (old: {
       src = lix;
-      version = "2.18.3-lix";
+      version = "2.90.0-lix";
       VERSION_SUFFIX = "-lix";
 
       patches = [ ];
