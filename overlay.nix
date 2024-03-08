@@ -24,6 +24,9 @@ in
       VERSION_SUFFIX = "-lix";
 
       patches = [ ];
+      # FIXME: we don't know why this was not being picked up properly when
+      # included in nativeCheckInputs.
+      nativeBuildInputs = old.nativeBuildInputs or [ ] ++ [ final.git ];
     });
     stable = nix_2_18;
     nix_2_18_upstream = prev.nixVersions.nix_2_18;
