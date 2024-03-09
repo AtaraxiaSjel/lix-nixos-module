@@ -1,8 +1,7 @@
 {
-  # fixme: use the forgejo address
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   inputs.lix = {
-    url = "git+ssh://gerrit.lix.systems:2022/lix";
+    url = "git+ssh://git@git.lix.systems/lix-project/lix.git";
     flake = false;
   };
   inputs.flake-utils.url = "github:numtide/flake-utils";
