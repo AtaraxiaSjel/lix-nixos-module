@@ -44,6 +44,10 @@ in
     nix = final.nixVersions.nix_2_18_upstream;
   };
 
+  nixos-option = prev.nixos-option.override {
+    nix = final.nixVersions.nix_2_18_upstream;
+  };
+
   nix-doc = prev.nix-doc.overrideAttrs (old: {
     # for the purposes of nix C++ API for nix-doc, lix is Nix 2.20
     NIX_CFLAGS_COMPILE = [ "-DNIX_2_20_0" ];
