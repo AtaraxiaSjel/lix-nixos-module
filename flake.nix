@@ -6,8 +6,9 @@
     flake = false;
   };
   inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.flake-compat.url = "git+ssh://git@git.lix.systems/lix-project/flake-compat";
 
-  outputs = { self, nixpkgs, lix, flake-utils }: {
+  outputs = { self, nixpkgs, lix, flake-utils, ... }: {
     nixosModules.default = import ./module.nix { inherit lix; };
     overlays.default = import ./overlay.nix { inherit lix; };
   } // flake-utils.lib.eachDefaultSystem (system:
