@@ -10,7 +10,7 @@ let
       (prev.path + "/pkgs/tools/package-management/nix/patches/boehmgc-coroutine-sp-fallback.patch")
 
       # https://github.com/ivmai/bdwgc/pull/586
-      (lix + "/boehmgc-traceable_allocator-public.diff")
+      (builtins.path { path = lix + "/boehmgc-traceable_allocator-public.diff"; name = "boehmgc-traceable_allocator-public.patch"; })
     ];
   })
   );
