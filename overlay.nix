@@ -1,4 +1,4 @@
-{ lix }:
+{ lix, versionSuffix ? "" }:
 final: prev:
 let
   boehmgc-patched = ((final.boehmgc.override {
@@ -21,8 +21,8 @@ in
     nix_2_18 = (prev.nixVersions.nix_2_18.override { boehmgc = boehmgc-patched; }).overrideAttrs (old: {
       src = lix;
       # FIXME: fake version so that nixpkgs will not try to use nix config >_>
-      version = "2.18.3-lix";
-      VERSION_SUFFIX = "-lix";
+      version = "2.18.3-lix${versionSuffix}";
+      VERSION_SUFFIX = "-lix${versionSuffix}";
 
       patches = [ ];
       # FIXME: we don't know why this was not being picked up properly when
