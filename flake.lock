@@ -33,14 +33,29 @@
         "type": "github"
       }
     },
+    "flakey-profile": {
+      "locked": {
+        "lastModified": 1711325813,
+        "narHash": "sha256-ygJR5VikyCfK0CUJHboOKJVr6s9HQ1RXcvFEFnv+KIk=",
+        "owner": "lf-",
+        "repo": "flakey-profile",
+        "rev": "3b32c4a71f89b874fe0be2dc125eacb9c3473204",
+        "type": "github"
+      },
+      "original": {
+        "owner": "lf-",
+        "repo": "flakey-profile",
+        "type": "github"
+      }
+    },
     "lix": {
       "flake": false,
       "locked": {
-        "lastModified": 1710788611,
-        "narHash": "sha256-nBiCx4mfntmJNv1MxVS3KmDeFzusxWC4ZdwKCT4noQw=",
+        "lastModified": 1711305922,
+        "narHash": "sha256-SNeKGjzDQX0W9iC8S3R17MDh+WuErNmE10vQAJv7P68=",
         "ref": "refs/heads/main",
-        "rev": "f256e3c5c69c7aa658ff6e8fd9c05063a1e9ace6",
-        "revCount": 15196,
+        "rev": "d26eccebfc1f0d3f5b77e781ffc6455f05f8f90c",
+        "revCount": 15216,
         "type": "git",
         "url": "ssh://git@git.lix.systems/lix-project/lix.git"
       },
@@ -69,6 +84,7 @@
       "inputs": {
         "flake-compat": "flake-compat",
         "flake-utils": "flake-utils",
+        "flakey-profile": "flakey-profile",
         "lix": "lix",
         "nixpkgs": "nixpkgs"
       }

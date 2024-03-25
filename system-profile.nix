@@ -5,4 +5,6 @@ flakey-profile.lib.mkProfile {
     cacert
     nix
   ];
+  name = "system-profile";
+  extraSwitchArgs = [ "--profile" "/nix/var/nix/profiles/default" ];
 }
