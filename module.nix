@@ -1,5 +1,5 @@
-{ lix }:
+{ lix, versionSuffix ? "" }:
 { pkgs, config, ... }:
 {
-  nixpkgs.overlays = [ (import ./overlay.nix { inherit lix; }) ];
+  nixpkgs.overlays = [ (import ./overlay.nix { inherit lix versionSuffix; }) ];
 }
