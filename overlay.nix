@@ -49,4 +49,8 @@ in
   };
 
   nix-doc = prev.callPackage ./nix-doc/package.nix { withPlugin = false; };
+
+  nix-init = prev.nix-init.override {
+    nix = final.nixVersions.nix_2_18_upstream;
+  };
 }
