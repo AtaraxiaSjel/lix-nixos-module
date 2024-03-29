@@ -60,4 +60,8 @@ in
   nix-init = prev.nix-init.override {
     nix = final.nixVersions.nix_2_18_upstream;
   };
+
+  nurl = prev.nurl.override {
+    nix = final.nixVersions.nix_2_18_upstream;
+  };
 }
