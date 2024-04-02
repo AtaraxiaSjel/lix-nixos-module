@@ -28,12 +28,14 @@ in
       dontUseCmakeConfigure = true;
 
       patches = [ ];
-      nativeBuildInputs = old.nativeBuildInputs or [ ] ++ [
-        final.cmake
+      buildInputs = old.buildInputs or [ ] ++ [
         final.toml11
+      ];
+      nativeBuildInputs = old.nativeBuildInputs or [ ] ++ [
+        final.buildPackages.cmake
         # FIXME: we don't know why this was not being picked up properly when
         # included in nativeCheckInputs.
-        final.git
+        final.buildPackages.git
       ];
     });
     stable = nix_2_18;
