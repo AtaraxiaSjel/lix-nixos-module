@@ -14,6 +14,9 @@ let
     ];
   })
   );
+
+  # Internal nix-doc used by Lix.
+  lix-doc = final.callPackage (lix + "/nix-doc/package.nix") { };
 in
 {
   nixVersions = prev.nixVersions // rec {
@@ -30,6 +33,7 @@ in
       patches = [ ];
       buildInputs = old.buildInputs or [ ] ++ [
         final.toml11
+        lix-doc
       ];
       nativeBuildInputs = old.nativeBuildInputs or [ ] ++ [
         final.buildPackages.cmake
