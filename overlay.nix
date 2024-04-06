@@ -40,6 +40,7 @@ in
         # FIXME: we don't know why this was not being picked up properly when
         # included in nativeCheckInputs.
         final.buildPackages.git
+        final.buildPackages.python3
       ];
     });
     stable = nix_2_18;
