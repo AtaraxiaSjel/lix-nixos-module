@@ -16,7 +16,7 @@ let
   );
 
   # Internal nix-doc used by Lix.
-  lix-doc = final.callPackage (lix + "/nix-doc/package.nix") { };
+  lix-doc = final.callPackage (lix + "/lix-doc/package.nix") { };
 in
 {
   nixVersions = prev.nixVersions // rec {
