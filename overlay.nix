@@ -19,6 +19,11 @@ let
   lix-doc = final.callPackage (lix + "/lix-doc/package.nix") { };
 in
 {
+  # used for things that one wouldn't necessarily want to update, but we
+  # nevertheless shove it in the overlay and fixed-point it in case one *does*
+  # want to do that.
+  lix-sources = import ./npins;
+
   nixVersions = prev.nixVersions // rec {
     # FIXME: do something less scuffed
     nix_2_18 = (prev.nixVersions.nix_2_18.override { boehmgc = boehmgc-patched; }).overrideAttrs (old: {
@@ -46,6 +51,18 @@ in
     stable = nix_2_18;
     nix_2_18_upstream = prev.nixVersions.nix_2_18;
   };
+
+  nix-eval-jobs = (prev.nix-eval-jobs.override {
+    # lix
+    nix = final.nixVersions.nix_2_18;
+  }).overrideAttrs (old: {
+    # FIXME: should this be patches instead?
+    src = final.lix-sources.nix-eval-jobs;
+
+    mesonBuildType = "debugoptimized";
+
+    ninjaFlags = old.ninjaFlags or [ ] ++ [ "-v" ];
+  });
 
   # force these onto upstream so we are not regularly rebuilding electron
   prefetch-yarn-deps = prev.prefetch-yarn-deps.override {

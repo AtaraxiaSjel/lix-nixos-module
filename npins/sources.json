@@ -1,0 +1,16 @@
+{
+  "pins": {
+    "nix-eval-jobs": {
+      "type": "Git",
+      "repository": {
+        "type": "Git",
+        "url": "git+ssh://git@git.lix.systems/lheckemann/nix-eval-jobs"
+      },
+      "branch": "main",
+      "revision": "c3d8ca19b39f4cc5a2df1061baf649d1fe20517e",
+      "url": null,
+      "hash": "1bww5ymy9klysm5z5hi1i8604b4dfrkrvikhslwv0vkrbwvfk5p0"
+    }
+  },
+  "version": 3
+}
