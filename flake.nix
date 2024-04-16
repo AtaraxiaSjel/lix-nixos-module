@@ -23,8 +23,10 @@
       in
       {
         inherit pkgs;
-        packages.default = pkgs.nixVersions.nix_2_18;
-        packages.nix-doc = pkgs.nix-doc;
+        packages = {
+          default = pkgs.nixVersions.nix_2_18;
+          inherit (pkgs) nix-doc nix-eval-jobs;
+        };
 
         packages.system-profile = import ./system-profile.nix { inherit pkgs flakey-profile; };
       });
