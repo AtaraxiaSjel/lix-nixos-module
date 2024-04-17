@@ -4,7 +4,7 @@
       "type": "Git",
       "repository": {
         "type": "Git",
-        "url": "git+ssh://git@git.lix.systems/lheckemann/nix-eval-jobs"
+        "url": "git+ssh://git@git.lix.systems/lix-project/nix-eval-jobs"
       },
       "branch": "main",
       "revision": "c3d8ca19b39f4cc5a2df1061baf649d1fe20517e",
