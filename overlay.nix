@@ -15,8 +15,15 @@ let
   })
   );
 
-  # Internal nix-doc used by Lix.
-  lix-doc = final.callPackage (lix + "/lix-doc/package.nix") { };
+  lixPkg = (final.callPackage (lix + "/package.nix") {
+    build-release-notes = false;
+    versionSuffix = "-lix${versionSuffix}";
+    boehmgc-nix = boehmgc-patched;
+  }).overrideAttrs {
+    # Note: load-bearing version override. Nixpkgs does version detection to determine
+    # what commands and whatnot we support, so tell Nixpkgs that we're 2.18 (ish).
+    version = "2.18.3-lix${versionSuffix}";
+  };
 in
 {
   # used for things that one wouldn't necessarily want to update, but we
@@ -26,28 +33,7 @@ in
 
   nixVersions = prev.nixVersions // rec {
     # FIXME: do something less scuffed
-    nix_2_18 = (prev.nixVersions.nix_2_18.override { boehmgc = boehmgc-patched; }).overrideAttrs (old: {
-      src = lix;
-      # FIXME: fake version so that nixpkgs will not try to use nix config >_>
-      version = "2.18.3-lix${versionSuffix}";
-      VERSION_SUFFIX = "-lix${versionSuffix}";
-
-      # We only include CMake so that Meson can locate toml11, which only ships CMake dependency metadata.
-      dontUseCmakeConfigure = true;
-
-      patches = [ ];
-      buildInputs = old.buildInputs or [ ] ++ [
-        final.toml11
-        lix-doc
-      ];
-      nativeBuildInputs = old.nativeBuildInputs or [ ] ++ [
-        final.buildPackages.cmake
-        # FIXME: we don't know why this was not being picked up properly when
-        # included in nativeCheckInputs.
-        final.buildPackages.git
-        final.buildPackages.python3
-      ];
-    });
+    nix_2_18 = lixPkg;
     stable = nix_2_18;
     nix_2_18_upstream = prev.nixVersions.nix_2_18;
   };
