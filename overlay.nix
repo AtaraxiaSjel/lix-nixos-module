@@ -24,6 +24,8 @@ let
     # what commands and whatnot we support, so tell Nixpkgs that we're 2.18 (ish).
     version = "2.18.3-lix${versionSuffix}";
   };
+
+  inherit (prev) lib;
 in
 {
   # used for things that one wouldn't necessarily want to update, but we
@@ -54,9 +56,15 @@ in
   prefetch-yarn-deps = prev.prefetch-yarn-deps.override {
     nix = final.nixVersions.nix_2_18_upstream;
   };
-  prefetch-npm-deps = prev.prefetch-npm-deps.override {
-    nix = final.nixVersions.nix_2_18_upstream;
-  };
+
+  # support both having and missing https://github.com/NixOS/nixpkgs/pull/304913
+  prefetch-npm-deps =
+    if (lib.functionArgs prev.prefetch-npm-deps.override) ? nix
+    then prev.prefetch-npm-deps.override {
+      nix = final.nixVersions.nix_2_18_upstream;
+    }
+    else prev.prefetch-npm-deps;
+
   nix-prefetch-git = prev.nix-prefetch-git.override {
     nix = final.nixVersions.nix_2_18_upstream;
   };
