@@ -5,7 +5,6 @@
     flake = false;
   };
   inputs.flake-utils.url = "github:numtide/flake-utils";
-  inputs.flake-compat.url = "git+ssh://git@git.lix.systems/lix-project/flake-compat";
   inputs.flakey-profile.url = "github:lf-/flakey-profile";
 
   outputs = inputs@{ self, nixpkgs, lix, flake-utils, flakey-profile, ... }:
