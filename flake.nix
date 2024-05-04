@@ -19,6 +19,13 @@
           inherit system;
           overlays = [ self.overlays.default ];
         };
+
+        linux64BitSystems = [
+          "x86_64-linux"
+          "aarch64-linux"
+        ];
+
+        inherit (pkgs) lib;
       in
       {
         inherit pkgs;
@@ -32,8 +39,9 @@
         nixosTests = pkgs.recurseIntoAttrs (pkgs.callPackage ./test-nixos.nix { lix-module = self.nixosModules.default; });
 
         checks = {
-          inherit (self.nixosTests.${system}) it-builds;
           inherit (self.packages.${system}) default nix-eval-jobs;
+        } // lib.optionalAttrs (lib.elem system linux64BitSystems) {
+          inherit (self.nixosTests.${system}) it-builds;
         };
       });
 }
