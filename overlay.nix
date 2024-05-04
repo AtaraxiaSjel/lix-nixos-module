@@ -8,7 +8,7 @@ let
       # for clown reasons this version is newer than the one in lix, we should
       # fix this and update our nixpkgs pin
       (prev.path + "/pkgs/tools/package-management/nix/patches/boehmgc-coroutine-sp-fallback.patch")
-
+    ] ++ final.lib.optionals (final.lib.versionOlder o.version "8.2.6") [
       # https://github.com/ivmai/bdwgc/pull/586
       (builtins.path { path = lix + "/boehmgc-traceable_allocator-public.diff"; name = "boehmgc-traceable_allocator-public.patch"; })
     ];
