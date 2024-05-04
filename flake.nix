@@ -28,5 +28,12 @@
         };
 
         packages.system-profile = import ./system-profile.nix { inherit pkgs flakey-profile; };
+
+        nixosTests = pkgs.recurseIntoAttrs (pkgs.callPackage ./test-nixos.nix { lix-module = self.nixosModules.default; });
+
+        checks = {
+          inherit (self.nixosTests.${system}) it-builds;
+          inherit (self.packages.${system}) default nix-eval-jobs;
+        };
       });
 }
