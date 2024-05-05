@@ -7,6 +7,7 @@ let
     if kind == "git" then
       builtins.fetchGit
         {
+          name = "source";
           url = args.url;
           ref = args.ref;
           rev = args.rev;
@@ -15,6 +16,7 @@ let
     else if kind == "tarball" then
       builtins.fetchTarball
         {
+          name = "source";
           url = args.locked_url;
           sha256 = args.nar_hash;
         } else builtins.throw "unsupported input type ${kind}";
