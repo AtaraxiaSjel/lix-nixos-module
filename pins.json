@@ -1,0 +1,1 @@
+{"nix-eval-jobs": {"kind": "git", "rev": "793841a9b7b689e37c9a7902710aab2bd6a833d5", "nar_hash": "sha256-hUYgXLE0+zOkGPXXwiVPYAZBQ5Es9OOkm800puk7a94=", "url": "git@git.lix.systems:lix-project/nix-eval-jobs", "ref": "main"}}

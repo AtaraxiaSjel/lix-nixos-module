@@ -31,7 +31,7 @@ in
   # used for things that one wouldn't necessarily want to update, but we
   # nevertheless shove it in the overlay and fixed-point it in case one *does*
   # want to do that.
-  lix-sources = import ./npins;
+  lix-sources = import ./pins.nix;
 
   nixVersions = prev.nixVersions // rec {
     # FIXME: do something less scuffed
