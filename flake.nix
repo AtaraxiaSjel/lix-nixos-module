@@ -1,7 +1,7 @@
 {
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   inputs.lix = {
-    url = "git+ssh://git@git.lix.systems/lix-project/lix.git";
+    url = "https://git.lix.systems/lix-project/lix.git";
     flake = false;
   };
   inputs.flake-utils.url = "github:numtide/flake-utils";
