@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env nix-shell
+#!nix-shell -i python3 -p 'python3.withPackages (ps: [ ps.requests ])'
 """
 Updates pins in this repo to their latest version.
 
@@ -146,7 +147,7 @@ def lock_git(url, branch) -> GitPinSerialized:
 
 PINS = {
     'nix-eval-jobs':
-    GitPinSpec('git@git.lix.systems:lix-project/nix-eval-jobs', 'main')
+    TarballPinSpec('https://git.lix.systems/lix-project/nix-eval-jobs/archive/main.tar.gz')
 }
 
 
