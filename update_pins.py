@@ -147,7 +147,7 @@ def lock_git(url, branch) -> GitPinSerialized:
 
 PINS = {
     'nix-eval-jobs':
-    GitPinSpec('git@git.lix.systems:lix-project/nix-eval-jobs', 'main')
+    TarballPinSpec('https://git.lix.systems/lix-project/nix-eval-jobs/archive/main.tar.gz')
 }
 
 
