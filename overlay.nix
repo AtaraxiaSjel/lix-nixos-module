@@ -25,8 +25,24 @@ let
     boehmgc-nix = boehmgc-patched;
   });
 
+  # These packages depend on Nix features that Lix does not support
+  overridelist_2_18 = [
+    "attic-client"
+    "nix-du"
+    "nix-init"
+    "nix-prefetch-git"
+    "nixos-option"
+    "nurl"
+    "prefetch-yarn-deps" # force these onto upstream so we are not regularly rebuilding electron
+  ];
+  override_2_18 = prev.lib.genAttrs overridelist_2_18 (
+    name: prev.${name}.override {
+      nix = final.nixVersions.nix_2_18_upstream;
+    });
+
   inherit (prev) lib;
 in
+override_2_18 //
 {
   # used for things that one wouldn't necessarily want to update, but we
   # nevertheless shove it in the overlay and fixed-point it in case one *does*
@@ -52,11 +68,6 @@ in
     ninjaFlags = old.ninjaFlags or [ ] ++ [ "-v" ];
   });
 
-  # force these onto upstream so we are not regularly rebuilding electron
-  prefetch-yarn-deps = prev.prefetch-yarn-deps.override {
-    nix = final.nixVersions.nix_2_18_upstream;
-  };
-
   # support both having and missing https://github.com/NixOS/nixpkgs/pull/304913
   prefetch-npm-deps =
     if (lib.functionArgs prev.prefetch-npm-deps.override) ? nix
@@ -65,21 +76,5 @@ in
     }
     else prev.prefetch-npm-deps;
 
-  nix-prefetch-git = prev.nix-prefetch-git.override {
-    nix = final.nixVersions.nix_2_18_upstream;
-  };
-
-  nixos-option = prev.nixos-option.override {
-    nix = final.nixVersions.nix_2_18_upstream;
-  };
-
   nix-doc = prev.callPackage ./nix-doc/package.nix { withPlugin = false; };
-
-  nix-init = prev.nix-init.override {
-    nix = final.nixVersions.nix_2_18_upstream;
-  };
-
-  nurl = prev.nurl.override {
-    nix = final.nixVersions.nix_2_18_upstream;
-  };
 }
