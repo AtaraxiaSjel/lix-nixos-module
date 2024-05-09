@@ -4,6 +4,10 @@ let
   boehmgc-patched = ((final.boehmgc.override {
     enableLargeConfig = true;
   }).overrideAttrs (o: {
+    # cherrypick: boehmgc: disable tests on aarch64-linux
+    # https://github.com/NixOS/nixpkgs/pull/309418
+    doCheck = !((final.stdenv.isDarwin && final.stdenv.isx86_64) || (final.stdenv.isLinux && final.stdenv.isAarch64));
+
     patches = (o.patches or [ ]) ++ [
       # for clown reasons this version is newer than the one in lix, we should
       # fix this and update our nixpkgs pin
