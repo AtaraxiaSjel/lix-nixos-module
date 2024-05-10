@@ -45,6 +45,8 @@ let
     });
 
   inherit (prev) lib;
+
+  prefetch-npm-deps-args = lib.functionArgs prev.prefetch-npm-deps.override;
 in
 override_2_18 //
 {
@@ -74,7 +76,7 @@ override_2_18 //
 
   # support both having and missing https://github.com/NixOS/nixpkgs/pull/304913
   prefetch-npm-deps =
-    if (lib.functionArgs prev.prefetch-npm-deps.override) ? nix
+    if (prefetch-npm-deps-args ? nix) || (prefetch-npm-deps-args == {})
     then prev.prefetch-npm-deps.override {
       nix = final.nixVersions.nix_2_18_upstream;
     }
