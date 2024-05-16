@@ -19,14 +19,21 @@ let
   })
   );
 
+  lixFunctionArgs = builtins.functionArgs (import (lix + "/package.nix"));
+  # fix up build-release-notes being required in older versions of Lix.
+  lixPackageBuildReleaseNotes =
+      if lixFunctionArgs.build-release-notes or true
+      then { }
+      else { build-release-notes = null; };
+
   # This is kind of scary to not override the nix version to pretend to be
   # 2.18 since nixpkgs can introduce new breakage in its Nix unstable CLI
   # usage.
   # https://github.com/nixos/nixpkgs/blob/6afb255d976f85f3359e4929abd6f5149c323a02/nixos/modules/config/nix.nix#L121
-  lixPkg = (final.callPackage (lix + "/package.nix") {
+  lixPkg = final.callPackage (lix + "/package.nix") ({
     versionSuffix = "-lix${versionSuffix}";
     boehmgc-nix = boehmgc-patched;
-  });
+  } // lixPackageBuildReleaseNotes);
 
   # These packages depend on Nix features that Lix does not support
   overridelist_2_18 = [
