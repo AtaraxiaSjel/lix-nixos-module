@@ -38,6 +38,7 @@ let
   # These packages depend on Nix features that Lix does not support
   overridelist_2_18 = [
     "attic-client"
+    "devenv"
     "nix-du"
     "nix-init"
     "nix-prefetch-git"
