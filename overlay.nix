@@ -24,7 +24,6 @@ let
   # usage.
   # https://github.com/nixos/nixpkgs/blob/6afb255d976f85f3359e4929abd6f5149c323a02/nixos/modules/config/nix.nix#L121
   lixPkg = (final.callPackage (lix + "/package.nix") {
-    build-release-notes = false;
     versionSuffix = "-lix${versionSuffix}";
     boehmgc-nix = boehmgc-patched;
   });
