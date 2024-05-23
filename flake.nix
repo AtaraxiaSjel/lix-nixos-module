@@ -8,7 +8,7 @@
   inputs.flakey-profile.url = "github:lf-/flakey-profile";
 
   outputs = inputs@{ self, nixpkgs, lix, flake-utils, flakey-profile, ... }:
-    let versionSuffix = "pre${builtins.substring 0 8 lix.lastModifiedDate}-${lix.shortRev}";
+    let versionSuffix = "pre${builtins.substring 0 8 lix.lastModifiedDate}-${lix.shortRev or lix.dirtyShortRev}";
     in {
       inherit inputs;
       nixosModules.default = import ./module.nix { inherit lix versionSuffix; };
