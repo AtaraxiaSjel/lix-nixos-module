@@ -72,14 +72,19 @@ override_2_18 //
   nix-eval-jobs = (prev.nix-eval-jobs.override {
     # lix
     nix = final.nixVersions.nix_2_18;
-  }).overrideAttrs (old: {
-    # FIXME: should this be patches instead?
-    src = final.lix-sources.nix-eval-jobs;
+  }).overrideAttrs (old:
+    let src = final.lix-sources.nix-eval-jobs;
+    in {
+      version = "2.90.0-lix-${builtins.substring 0 7 src.rev}";
 
-    mesonBuildType = "debugoptimized";
+      # FIXME: should this be patches instead?
+      inherit src;
 
-    ninjaFlags = old.ninjaFlags or [ ] ++ [ "-v" ];
-  });
+      mesonBuildType = "debugoptimized";
+
+      ninjaFlags = old.ninjaFlags or [ ] ++ [ "-v" ];
+    }
+  );
 
   # support both having and missing https://github.com/NixOS/nixpkgs/pull/304913
   prefetch-npm-deps =

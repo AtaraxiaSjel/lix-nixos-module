@@ -14,11 +14,13 @@ let
           narHash = args.nar_hash;
         }
     else if kind == "tarball" then
-      builtins.fetchTarball
-        {
+      args // {
+        outPath = builtins.fetchTarball {
           name = "source";
           url = args.locked_url;
           sha256 = args.nar_hash;
-        } else builtins.throw "unsupported input type ${kind}";
+        };
+      }
+    else builtins.throw "unsupported input type ${kind}";
 in
 builtins.mapAttrs (_: fetchPin) pins
