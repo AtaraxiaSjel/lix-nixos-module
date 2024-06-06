@@ -54,45 +54,67 @@ let
   inherit (prev) lib;
 
   prefetch-npm-deps-args = lib.functionArgs prev.prefetch-npm-deps.override;
-in
-override_2_18 //
-{
-  # used for things that one wouldn't necessarily want to update, but we
-  # nevertheless shove it in the overlay and fixed-point it in case one *does*
-  # want to do that.
-  lix-sources = import ./pins.nix;
 
-  nixVersions = prev.nixVersions // rec {
-    # FIXME: do something less scuffed
-    nix_2_18 = lixPkg;
-    stable = nix_2_18;
-    nix_2_18_upstream = prev.nixVersions.nix_2_18;
+  warning = ''
+    warning: You have the lix overlay included into a nixpkgs import twice,
+    perhaps due to the NixOS module being included twice, or because of using
+    pkgs.nixos and also including it in imports, or perhaps some unknown
+    machinations of a complicated flake library.
+    This is completely harmless since we have no-op'd the second one if you are
+    seeing this message, but it would be a small style improvement to fix
+    it :)
+    P.S. If you had some hack to fix nixos-option build failures in your
+    configuration, that was caused by including an older version of the lix
+    overlay twice, which is now mitigated if you see this message, so you can
+    delete that.
+    P.P.S. This Lix has super catgirl powers.
+  '';
+
+  maybeWarnDuplicate = x: if final.lix-overlay-present > 1 then builtins.trace warning x else x;
+
+  overlay = override_2_18 // {
+    lix-overlay-present = 1;
+    # used for things that one wouldn't necessarily want to update, but we
+    # nevertheless shove it in the overlay and fixed-point it in case one *does*
+    # want to do that.
+    lix-sources = import ./pins.nix;
+
+    nixVersions = prev.nixVersions // rec {
+      # FIXME: do something less scuffed
+      nix_2_18 = maybeWarnDuplicate lixPkg;
+      stable = nix_2_18;
+      nix_2_18_upstream = prev.nixVersions.nix_2_18;
+    };
+
+    nix-eval-jobs = (prev.nix-eval-jobs.override {
+      # lix
+      nix = final.nixVersions.nix_2_18;
+    }).overrideAttrs (old:
+      let src = final.lix-sources.nix-eval-jobs;
+      in {
+        version = "2.90.0-lix-${builtins.substring 0 7 src.rev}";
+
+        # FIXME: should this be patches instead?
+        inherit src;
+
+        mesonBuildType = "debugoptimized";
+
+        ninjaFlags = old.ninjaFlags or [ ] ++ [ "-v" ];
+      }
+    );
+
+    # support both having and missing https://github.com/NixOS/nixpkgs/pull/304913
+    prefetch-npm-deps =
+      if (prefetch-npm-deps-args ? nix) || (prefetch-npm-deps-args == {})
+      then prev.prefetch-npm-deps.override {
+        nix = final.nixVersions.nix_2_18_upstream;
+      }
+      else prev.prefetch-npm-deps;
+
+    nix-doc = prev.callPackage ./nix-doc/package.nix { withPlugin = false; };
   };
-
-  nix-eval-jobs = (prev.nix-eval-jobs.override {
-    # lix
-    nix = final.nixVersions.nix_2_18;
-  }).overrideAttrs (old:
-    let src = final.lix-sources.nix-eval-jobs;
-    in {
-      version = "2.90.0-lix-${builtins.substring 0 7 src.rev}";
-
-      # FIXME: should this be patches instead?
-      inherit src;
-
-      mesonBuildType = "debugoptimized";
-
-      ninjaFlags = old.ninjaFlags or [ ] ++ [ "-v" ];
-    }
-  );
-
-  # support both having and missing https://github.com/NixOS/nixpkgs/pull/304913
-  prefetch-npm-deps =
-    if (prefetch-npm-deps-args ? nix) || (prefetch-npm-deps-args == {})
-    then prev.prefetch-npm-deps.override {
-      nix = final.nixVersions.nix_2_18_upstream;
-    }
-    else prev.prefetch-npm-deps;
-
-  nix-doc = prev.callPackage ./nix-doc/package.nix { withPlugin = false; };
-}
+in
+  # Make the overlay idempotent, since flakes passing nixos modules around by
+  # value and many other things make it way too easy to include the overlay
+  # twice
+  if (prev ? lix-overlay-present) then { lix-overlay-present = 2; } else overlay

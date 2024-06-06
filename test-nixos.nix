@@ -2,6 +2,7 @@
 let
   configs = {
     it-builds = nixos ({ ... }: {
+      imports = [ lix-module ];
       documentation.enable = false;
       fileSystems."/".device = "ignore-root-device";
       boot.loader.grub.enable = false;
