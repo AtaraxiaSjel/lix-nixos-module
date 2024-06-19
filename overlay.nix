@@ -6,10 +6,10 @@ let
   # usage.
   # https://github.com/nixos/nixpkgs/blob/6afb255d976f85f3359e4929abd6f5149c323a02/nixos/modules/config/nix.nix#L121
   lixPkg = final.callPackage (lix + "/package.nix") ({
-    # versionSuffix = "-lix${versionSuffix}";
+    versionSuffix = "-${versionSuffix}";
     # FIXME: do this more sensibly for future releases
     # https://git.lix.systems/lix-project/lix/issues/406
-    officialRelease = true;
+    officialRelease = false;
   });
 
   # These packages depend on Nix features that Lix does not support

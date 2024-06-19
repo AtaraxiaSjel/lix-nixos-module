@@ -1,7 +1,7 @@
 {
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   inputs.lix = {
-    url = "https://git.lix.systems/lix-project/lix/archive/2.90.0-rc1.tar.gz";
+    url = "https://git.lix.systems/lix-project/lix/archive/release-2.90.tar.gz";
     flake = false;
   };
   inputs.flake-utils.url = "github:numtide/flake-utils";
