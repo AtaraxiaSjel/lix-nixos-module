@@ -1,39 +1,16 @@
 { lix, versionSuffix ? "" }:
 final: prev:
 let
-  boehmgc-patched = ((final.boehmgc.override {
-    enableLargeConfig = true;
-  }).overrideAttrs (o: {
-    # cherrypick: boehmgc: disable tests on aarch64-linux
-    # https://github.com/NixOS/nixpkgs/pull/309418
-    doCheck = !((final.stdenv.isDarwin && final.stdenv.isx86_64) || (final.stdenv.isLinux && final.stdenv.isAarch64));
-
-    patches = (o.patches or [ ]) ++ [
-      # for clown reasons this version is newer than the one in lix, we should
-      # fix this and update our nixpkgs pin
-      (prev.path + "/pkgs/tools/package-management/nix/patches/boehmgc-coroutine-sp-fallback.patch")
-    ] ++ final.lib.optionals (final.lib.versionOlder o.version "8.2.6") [
-      # https://github.com/ivmai/bdwgc/pull/586
-      (builtins.path { path = lix + "/boehmgc-traceable_allocator-public.diff"; name = "boehmgc-traceable_allocator-public.patch"; })
-    ];
-  })
-  );
-
-  lixFunctionArgs = builtins.functionArgs (import (lix + "/package.nix"));
-  # fix up build-release-notes being required in older versions of Lix.
-  lixPackageBuildReleaseNotes =
-      if lixFunctionArgs.build-release-notes or true
-      then { }
-      else { build-release-notes = null; };
-
   # This is kind of scary to not override the nix version to pretend to be
   # 2.18 since nixpkgs can introduce new breakage in its Nix unstable CLI
   # usage.
   # https://github.com/nixos/nixpkgs/blob/6afb255d976f85f3359e4929abd6f5149c323a02/nixos/modules/config/nix.nix#L121
   lixPkg = final.callPackage (lix + "/package.nix") ({
-    versionSuffix = "-lix${versionSuffix}";
-    boehmgc-nix = boehmgc-patched;
-  } // lixPackageBuildReleaseNotes);
+    # versionSuffix = "-lix${versionSuffix}";
+    # FIXME: do this more sensibly for future releases
+    # https://git.lix.systems/lix-project/lix/issues/406
+    officialRelease = true;
+  });
 
   # These packages depend on Nix features that Lix does not support
   overridelist_2_18 = [
