@@ -89,6 +89,8 @@ let
       else prev.prefetch-npm-deps;
 
     nix-doc = prev.callPackage ./nix-doc/package.nix { withPlugin = false; };
+
+    pegtl = prev.callPackage ./pegtl.nix { };
   };
 in
   # Make the overlay idempotent, since flakes passing nixos modules around by
