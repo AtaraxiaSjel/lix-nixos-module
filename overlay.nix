@@ -28,10 +28,6 @@ let
       nix = final.nixVersions.nix_2_18_upstream;
     });
 
-  inherit (prev) lib;
-
-  prefetch-npm-deps-args = lib.functionArgs prev.prefetch-npm-deps.override;
-
   warning = ''
     warning: You have the lix overlay included into a nixpkgs import twice,
     perhaps due to the NixOS module being included twice, or because of using
@@ -79,14 +75,6 @@ let
         ninjaFlags = old.ninjaFlags or [ ] ++ [ "-v" ];
       }
     );
-
-    # support both having and missing https://github.com/NixOS/nixpkgs/pull/304913
-    prefetch-npm-deps =
-      if (prefetch-npm-deps-args ? nix) || (prefetch-npm-deps-args == {})
-      then prev.prefetch-npm-deps.override {
-        nix = final.nixVersions.nix_2_18_upstream;
-      }
-      else prev.prefetch-npm-deps;
 
     nix-doc = prev.callPackage ./nix-doc/package.nix { withPlugin = false; };
 
