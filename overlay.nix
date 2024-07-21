@@ -1,11 +1,11 @@
-{ lix, versionSuffix ? "" }:
+{ lix ? null, versionSuffix ? "" }:
 final: prev:
 let
   # This is kind of scary to not override the nix version to pretend to be
   # 2.18 since nixpkgs can introduce new breakage in its Nix unstable CLI
   # usage.
   # https://github.com/nixos/nixpkgs/blob/6afb255d976f85f3359e4929abd6f5149c323a02/nixos/modules/config/nix.nix#L121
-  lixPkg = final.callPackage (lix + "/package.nix") ({
+  lixPkgFromSource = final.callPackage (lix + "/package.nix") ({
     versionSuffix = "-${versionSuffix}";
     # FIXME: do this more sensibly for future releases
     # https://git.lix.systems/lix-project/lix/issues/406
@@ -52,9 +52,11 @@ let
     # want to do that.
     lix-sources = import ./pins.nix;
 
+    lix = if lix != null then lixPkgFromSource else prev.lix;
+
     nixVersions = prev.nixVersions // rec {
       # FIXME: do something less scuffed
-      nix_2_18 = maybeWarnDuplicate lixPkg;
+      nix_2_18 = maybeWarnDuplicate final.lix;
       stable = nix_2_18;
       nix_2_18_upstream = prev.nixVersions.nix_2_18;
     };
