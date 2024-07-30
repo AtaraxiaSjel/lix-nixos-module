@@ -11,8 +11,21 @@
     let versionSuffix = "pre${builtins.substring 0 8 lix.lastModifiedDate}-${lix.shortRev or lix.dirtyShortRev}";
     in {
       inherit inputs;
-      nixosModules.default = import ./module.nix { inherit lix versionSuffix; };
-      overlays.default = import ./overlay.nix { inherit lix versionSuffix; };
+      nixosModules = {
+        # Use a locally built Lix
+        default = import ./module.nix { inherit lix versionSuffix; };
+
+        # Use Lix from nixpkgs
+        lixFromNixpkgs = import ./module.nix { lix = null; };
+      };
+
+      overlays = {
+        # Use a locally built Lix
+        default = import ./overlay.nix { inherit lix versionSuffix; };
+
+        # Use Lix from nixpkgs
+        lixFromNixpkgs = import ./overlay.nix { lix = null; };
+      };
     } // flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
