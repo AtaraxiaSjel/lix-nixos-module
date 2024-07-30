@@ -36,11 +36,12 @@
 
         packages.system-profile = import ./system-profile.nix { inherit pkgs flakey-profile; };
 
-        nixosTests = pkgs.recurseIntoAttrs (pkgs.callPackage ./test-nixos.nix { lix-module = self.nixosModules.default; });
+        nixosTests = pkgs.recurseIntoAttrs (pkgs.callPackage ./test-nixos.nix { inherit pkgs; lix-module = self.nixosModules.default; });
 
         checks = {
           inherit (self.packages.${system}) default nix-eval-jobs;
         } // lib.optionalAttrs (lib.elem system linux64BitSystems) {
+          # wrongMajor intentionally not included here since it is expected to fail
           inherit (self.nixosTests.${system}) it-builds;
         };
       });

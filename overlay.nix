@@ -5,7 +5,7 @@ let
   # 2.18 since nixpkgs can introduce new breakage in its Nix unstable CLI
   # usage.
   # https://github.com/nixos/nixpkgs/blob/6afb255d976f85f3359e4929abd6f5149c323a02/nixos/modules/config/nix.nix#L121
-  lixPkgFromSource = final.callPackage (lix + "/package.nix") ({
+  lixPackageFromSource = final.callPackage (lix + "/package.nix") ({
     versionSuffix = "-${versionSuffix}";
     # FIXME: do this more sensibly for future releases
     # https://git.lix.systems/lix-project/lix/issues/406
@@ -28,8 +28,13 @@ let
       nix = final.nixVersions.nix_2_18_upstream;
     });
 
+  inherit (prev) lib;
+
+  csi = builtins.fromJSON ''"\u001b"'';
+  orange = "${csi}[35;1m";
+  normal = "${csi}[0m";
   warning = ''
-    warning: You have the lix overlay included into a nixpkgs import twice,
+    ${orange}warning${normal}: You have the lix overlay included into a nixpkgs import twice,
     perhaps due to the NixOS module being included twice, or because of using
     pkgs.nixos and also including it in imports, or perhaps some unknown
     machinations of a complicated flake library.
@@ -42,8 +47,24 @@ let
     delete that.
     P.P.S. This Lix has super catgirl powers.
   '';
+  wrongMajorWarning = ''
+    ${orange}warning${normal}: This Lix NixOS module is being built against a Lix with a
+    major version (got ${lixPackageToUse.version}) other than the one the
+    module was designed for (expecting ${supportedLixMajor}). Some downstream
+    packages like nix-eval-jobs may be broken by this. Consider using a
+    matching version of the Lix NixOS module to the version of Lix you are
+    using.
+  '';
 
   maybeWarnDuplicate = x: if final.lix-overlay-present > 1 then builtins.trace warning x else x;
+
+  versionJson = builtins.fromJSON (builtins.readFile ./version.json);
+  supportedLixMajor = builtins.elemAt (builtins.match ''^([[:digit:]]+\.[[:digit:]]+)\..*'' versionJson.version) 0;
+  lixPackageToUse = if lix != null then lixPackageFromSource else prev.lix;
+  # Especially if using Lix from nixpkgs, it is plausible that the overlay
+  # could be used against the wrong Lix major version and cause confusing build
+  # errors. This is a simple safeguard to put in at least something that might be seen.
+  maybeWarnWrongMajor = x: if !(lib.hasPrefix supportedLixMajor lixPackageToUse.version) then builtins.trace wrongMajorWarning x else x;
 
   overlay = override_2_18 // {
     lix-overlay-present = 1;
@@ -52,11 +73,10 @@ let
     # want to do that.
     lix-sources = import ./pins.nix;
 
-    lix = if lix != null then lixPkgFromSource else prev.lix;
+    lix = maybeWarnWrongMajor (maybeWarnDuplicate lixPackageToUse);
 
     nixVersions = prev.nixVersions // rec {
-      # FIXME: do something less scuffed
-      nix_2_18 = maybeWarnDuplicate final.lix;
+      nix_2_18 = final.lix;
       stable = nix_2_18;
       nix_2_18_upstream = prev.nixVersions.nix_2_18;
     };
