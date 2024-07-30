@@ -1,4 +1,4 @@
-{ lix ? null, versionSuffix ? "" }:
+{ lix, versionSuffix ? "" }:
 final: prev:
 let
   # This is kind of scary to not override the nix version to pretend to be
