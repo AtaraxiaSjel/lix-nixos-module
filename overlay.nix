@@ -67,7 +67,7 @@ let
     }).overrideAttrs (old:
       let src = final.lix-sources.nix-eval-jobs;
       in {
-        version = "2.90.0-lix-${builtins.substring 0 7 src.rev}";
+        version = "2.91.0-lix-${builtins.substring 0 7 src.rev}";
 
         # FIXME: should this be patches instead?
         inherit src;
