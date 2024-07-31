@@ -21,7 +21,10 @@ Optionally, it can build Lix from source.
 
 The version of this overlay should match the major Lix version, *and* if
 running HEAD, it should be the latest available version of the overlay.
-Breaking changes to the overlay are shamelessly done on HEAD.
+Changes breaking the overlay are shamelessly done on HEAD, and we expect people
+doing such changes to have prepared corresponding fix commits to make to the
+overlay immediately after submitting their changes. If your build randomly
+broke when updating HEAD, try updating your overlay.
 
 The version of Lix pinned in this flake's `flake.lock` is a version of Lix
 that is expected to work, however if running HEAD, it can be assumed to work
