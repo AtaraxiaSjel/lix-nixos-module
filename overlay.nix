@@ -6,7 +6,7 @@ let
   # usage.
   # https://github.com/nixos/nixpkgs/blob/6afb255d976f85f3359e4929abd6f5149c323a02/nixos/modules/config/nix.nix#L121
   lixPackageFromSource = final.callPackage (lix + "/package.nix") ({
-    versionSuffix = "-${versionSuffix}";
+    inherit versionSuffix;
   });
 
   # These packages depend on Nix features that Lix does not support
@@ -23,7 +23,8 @@ let
   override_2_18 = prev.lib.genAttrs overridelist_2_18 (
     name: prev.${name}.override {
       nix = final.nixVersions.nix_2_18_upstream;
-    });
+    }
+  );
 
   inherit (prev) lib;
 
@@ -56,7 +57,7 @@ let
   maybeWarnDuplicate = x: if final.lix-overlay-present > 1 then builtins.trace warning x else x;
 
   versionJson = builtins.fromJSON (builtins.readFile ./version.json);
-  supportedLixMajor = builtins.elemAt (builtins.match ''^([[:digit:]]+\.[[:digit:]]+)\..*'' versionJson.version) 0;
+  supportedLixMajor = lib.versions.majorMinor versionJson.version;
   lixPackageToUse = if lix != null then lixPackageFromSource else prev.lix;
   # Especially if using Lix from nixpkgs, it is plausible that the overlay
   # could be used against the wrong Lix major version and cause confusing build
@@ -98,7 +99,7 @@ let
     nix-doc = prev.callPackage ./nix-doc/package.nix { withPlugin = false; };
   };
 in
-  # Make the overlay idempotent, since flakes passing nixos modules around by
+# Make the overlay idempotent, since flakes passing nixos modules around by
   # value and many other things make it way too easy to include the overlay
   # twice
-  if (prev ? lix-overlay-present) then { lix-overlay-present = 2; } else overlay
+if (prev ? lix-overlay-present) then { lix-overlay-present = 2; } else overlay

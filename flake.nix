@@ -8,8 +8,12 @@
   inputs.flakey-profile.url = "github:lf-/flakey-profile";
 
   outputs = inputs@{ self, nixpkgs, lix, flake-utils, flakey-profile, ... }:
-    let versionSuffix = "pre${builtins.substring 0 8 lix.lastModifiedDate}-${lix.shortRev or lix.dirtyShortRev}";
-    in {
+    let
+      lixVersionJson = builtins.fromJSON (builtins.readFile (lix + "/version.json"));
+      versionSuffix = nixpkgs.lib.optionalString (!lixVersionJson.official_release)
+        "-pre${builtins.substring 0 8 lix.lastModifiedDate}-${lix.shortRev or lix.dirtyShortRev}";
+    in
+    {
       inherit inputs;
       nixosModules = {
         # Use a locally built Lix
